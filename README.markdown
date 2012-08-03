@@ -53,14 +53,16 @@ invoice = {
 
 # requisite o token
 @moip.get_token(invoice)
+```
 
-# Na view 
+## View
+```html
 
 <%= @moip.javascript_tag %> # Vai gerar o include do Javascript
 
 <%= @moip.widget_tag('paymentSucess', 'paymentFail') %> # Vai gerar o a div do javascript com as funções
-```
 
+```
 
 ## Contribuições
 
