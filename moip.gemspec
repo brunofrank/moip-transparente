@@ -14,4 +14,5 @@ Gem::Specification.new do |gem|
   gem.name          = "moip-transparente"
   gem.require_paths = ["lib"]
   gem.version       = Moip::VERSION
+  gem.add_dependency  = 'libxml-ruby', '~> 2.3.3'
 end
