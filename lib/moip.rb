@@ -1,7 +1,9 @@
 require "net/https"
 require "uri"
+require "httparty"
 require "moip/version"
 require "moip/checkout"
+require "moip/moip_request"
 
 module Moip
   class Config

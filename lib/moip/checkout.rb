@@ -28,7 +28,7 @@ class Moip::Checkout
     unica << description
     
     id_invoice = XML::Node.new('IdProprio')
-    id_invoice << invoice[:id]  
+    id_invoice << invoice[:id]
     unica << id_invoice
 
     valores = XML::Node.new('Valores')
@@ -36,18 +36,17 @@ class Moip::Checkout
     valor = XML::Node.new('Valor')
     valor['moeda'] = 'BRL'
     valor << invoice[:total]
-
     valores << valor
-
         
-    valor = XML::Node.new('Acrescimo')
-    valor['moeda'] = 'BRL'
-    valores << invoice[:acrescimo]  || '0.00'    
-    
-    
-    valor = XML::Node.new('Deducao')
-    valor['moeda'] = 'BRL'
-    valores << invoice[:desconto]  || '0.00'    
+    acrescimo = XML::Node.new('Acrescimo')
+    acrescimo['moeda'] = 'BRL'
+    acrescimo << invoice[:acrescimo]  || '0.00'    
+    valores << acrescimo
+
+    deducao = XML::Node.new('Deducao')
+    deducao['moeda'] = 'BRL'
+    deducao << invoice[:desconto]  || '0.00'    
+    valores << deducao
 
     unica << valores    
     
@@ -163,9 +162,9 @@ class Moip::Checkout
     
     unica << comissoes    
     
-    doc.root << unica    
+    doc.root << unica
 
-    parser = XML::Parser.string(post_data(doc.to_s))
+    parser = XML::Parser.string(Moip::MoipRequest.post_data(doc.to_s).body)
     dom = parser.parse 
     resposta = dom.find('./Resposta').first
     if resposta.find('Status')[0].content  == 'Sucesso'
@@ -176,15 +175,9 @@ class Moip::Checkout
     end    
   end
   
-private
+  private
   
-  def get_token_url
-    if Moip::Config.test?
-      return "https://desenvolvedor.moip.com.br/sandbox/ws/alpha/EnviarInstrucao/Unica"
-    else
-      return "https://www.moip.com.br/ws/alpha/EnviarInstrucao/Unica"
-    end
-  end
+  
 
   def get_javascript_url
     if Moip::Config.test?
@@ -193,19 +186,5 @@ private
       return "https://www.moip.com.br/transparente/MoipWidget-v2.js"
     end
   end  
-  
-  def post_data(xml)
-    uri = URI.parse(get_token_url)
-    http = Net::HTTP.new(uri.host, uri.port)
-    http.use_ssl = true
-    http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-    #http.set_debug_output $stderr if Moip::Config.test?
-    
-    request = Net::HTTP::Post.new(uri.path)
-    request.basic_auth Moip::Config.access_token, Moip::Config.access_key
-    
-    request.body = xml
-    response = http.start {|r| r.request request }
-    response.body
-  end      
+
 end

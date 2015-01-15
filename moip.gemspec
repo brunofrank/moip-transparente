@@ -7,7 +7,6 @@ Gem::Specification.new do |gem|
   gem.description   = %q{Gem para integração com checkout transparente do MOIP}
   gem.summary       = %q{Gem para integração com checkout transparente do MOIP}
   gem.homepage      = ""
-
   gem.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   gem.files         = `git ls-files`.split("\n")
   gem.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
@@ -15,4 +14,5 @@ Gem::Specification.new do |gem|
   gem.require_paths = ["lib"]
   gem.version       = Moip::VERSION
   gem.add_dependency('libxml-ruby', '~> 2.8.0')
+  gem.add_dependency('httparty')
 end
